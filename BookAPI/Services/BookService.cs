@@ -15,9 +15,13 @@ namespace BookAPI.Services
             _books.Remove(id);
         }
 
-        public Book GetBook(Guid id)
-        {
+        public Book? GetBook(Guid id)
+        {   
+            if (_books.ContainsKey(id))
+            {
             return _books[id];
+            }
+            return null;
         }
 
         public void UpsertBook(Book book)

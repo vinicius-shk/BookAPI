@@ -7,7 +7,7 @@ namespace BookAPI.Services
     {
         void CreateBook(Book book);
         void DeleteBook(Guid id);
-        Book GetBook(Guid id);
+        Book? GetBook(Guid id);
         void UpsertBook(Book book);
     }
 }

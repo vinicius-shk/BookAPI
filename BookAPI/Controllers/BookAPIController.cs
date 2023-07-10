@@ -46,7 +46,12 @@ namespace BookAPI.Controllers
         [HttpGet("{id:guid}")]
         public IActionResult GetBook(Guid id)
         {
-            Book book = _bookService.GetBook(id);
+            Book? book = _bookService.GetBook(id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
 
             var response = new BookResponse(
                 book.Id,
