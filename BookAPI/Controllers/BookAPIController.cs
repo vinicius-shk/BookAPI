@@ -15,6 +15,19 @@ namespace BookAPI.Controllers
         {
             _bookService = bookService;
         }
+
+        private static BookResponse MapBookResponse(Book book)
+        {
+            return new BookResponse(
+                            book.Id,
+                            book.Title,
+                            book.Description,
+                            book.Publisher,
+                            book.PageCount,
+                            book.LastModifiedDateTime
+                            );
+        }
+
         [HttpPost]
         public IActionResult CreateBook(CreateBookRequest request)
         {
@@ -29,17 +42,10 @@ namespace BookAPI.Controllers
             // TODO: save to db
             _bookService.CreateBook(book);
 
-            var response = new BookResponse(
-                book.Id,
-                book.Title,
-                book.Description,
-                book.Publisher,
-                book.PageCount,
-                book.LastModifiedDateTime
-                );
+            BookResponse response = MapBookResponse(book);
             return CreatedAtAction(
                 nameof( CreateBook ),
-                new { id = book.Id },
+                new { id = response.BookId },
                 response);
         }
 
@@ -53,14 +59,7 @@ namespace BookAPI.Controllers
                 return NotFound();
             }
 
-            var response = new BookResponse(
-                book.Id,
-                book.Title,
-                book.Description,
-                book.Publisher,
-                book.PageCount,
-                book.LastModifiedDateTime
-                );
+            BookResponse response = MapBookResponse(book);
 
             return Ok(response);
         }
@@ -76,8 +75,17 @@ namespace BookAPI.Controllers
                 request.PageCount,
                 DateTime.UtcNow);
 
+            if (_bookService.GetBook(id) == null)
+            {
+                BookResponse response = MapBookResponse(book);
+                _bookService.UpsertBook(book);
+                return CreatedAtAction(
+                    nameof( CreateBook ),
+                    new { id = book.Id },
+                    response);
+            }
+
             _bookService.UpsertBook(book);
-            // TODO: return 201 if a new book was created.
             return NoContent();
         }
 
