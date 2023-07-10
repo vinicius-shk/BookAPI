@@ -10,9 +10,19 @@ namespace BookAPI.Services
             _books.Add(book.Id, book);
         }
 
+        public void DeleteBook(Guid id)
+        {
+            _books.Remove(id);
+        }
+
         public Book GetBook(Guid id)
         {
             return _books[id];
+        }
+
+        public void UpsertBook(Book book)
+        {
+            _books[book.Id] = book;
         }
     }
 }

@@ -63,12 +63,23 @@ namespace BookAPI.Controllers
         [HttpPut("{id:guid}")]
         public IActionResult UpsertBook(Guid id, UpsertBookRequest request)
         {
-            return Ok(request);
+            var book = new Book(
+                id,
+                request.Title,
+                request.Description,
+                request.Publisher,
+                request.PageCount,
+                DateTime.UtcNow);
+
+            _bookService.UpsertBook(book);
+            // TODO: return 201 if a new book was created.
+            return NoContent();
         }
 
         [HttpDelete("{id:guid}")]
         public IActionResult DeletetBook(Guid id)
         {
+            _bookService.DeleteBook(id);
             return NoContent();
         }
     }
